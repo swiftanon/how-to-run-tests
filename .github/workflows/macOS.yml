@@ -1,0 +1,79 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  build-and-test:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout source code
+      uses: actions/checkout@v3
+
+    - name: Set up Xcode environment
+      run: |
+        # Ensure the correct Swift version is being used
+        swift --version
+        
+        # Check if the correct Xcode version is being used
+        xcodebuild -version
+
+        # Print environment variables for debugging
+        env
+        
+    - name: Resolve Swift Package Dependencies
+      run: swift package resolve
+
+    - name: Build and Run Tests
+      run: |
+        # Specify the correct scheme and destination for building and testing
+        xcodebuild test \
+          -scheme "YourSchemeName" \
+          -destination "platform=iOS Simulator,name=iPhone 14,OS=17.0" \
+          -configuration Debug \
+          -enableCodeCoverage YES
+
+    - name: Analyze Coverage
+      if: always()
+      run: |
+        # Example: process code coverage if needed
+        xcodebuild -showBuildSettings -json | grep -o '"TARGET_TEMP_DIR".*' | cut -d'"' -f4
+        # Additional steps for coverage analysis could go here
+    
+    - name: Ensure Resources Are Available
+      run: |
+        # Check that all resources are present and accessible
+        ls -al
+        # Additional commands to verify resources, such as checking specific files or paths
+
+    - name: Deploy/Test with Custom Configuration
+      if: success()
+      run: |
+        # Run any custom scripts or commands that mirror specific Xcode configurations
+        ./scripts/custom-test-script.sh  # Replace with your custom script if any
+
+    - name: Clean Up
+      if: always()
+      run: |
+        # Clean up temporary files or reset states if necessary
+        rm -rf build/
+
+    - name: Upload Artifacts (Optional)
+      if: failure()
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-logs
+        path: build/
+
+    - name: Notify on Failure (Optional)
+      if: failure()
+      uses: slackapi/slack-github-action@v1.23.0
+      with:
+        channel-id: your-slack-channel-id
+        slack-message: "Build failed for ${{ github.sha }}: ${{ github.ref }}"
