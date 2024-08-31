@@ -14,7 +14,7 @@ jobs:
 
     steps:
     - name: Checkout source code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Check Swift Version
       run: |
@@ -27,6 +27,10 @@ jobs:
     - name: Print Github ENV VARS for debugging
       run: |
         env
+
+    - name: Print Swiftformat Version
+      run: |
+        swiftformat --version
 
     # - name: Resolve Swift Package Dependencies
     #   run: swift package resolve
