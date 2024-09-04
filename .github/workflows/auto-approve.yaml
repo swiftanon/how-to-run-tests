@@ -4,6 +4,9 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 
+permissions:
+  pull_request: write
+
 jobs:
   auto-approve:
     runs-on: macos-latest
