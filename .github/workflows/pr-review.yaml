@@ -5,7 +5,7 @@ on:
     types: [submitted]
 
 jobs:
-  review_approved:
+  review-approved:
     if: github.event.review.state == 'approved'
     runs-on: macos-latest
     steps:

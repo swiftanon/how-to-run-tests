@@ -5,7 +5,7 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
-  auto_approve:
+  auto-approve:
     runs-on: macos-latest
     if: github.actor == 'swiftanon'
     steps:
@@ -14,10 +14,10 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const { context, github } = require('actions/github');
             const pr_number = context.payload.pull_request.number;
             await github.pulls.createReview({
               owner: context.repo.owner,
               repo: context.repo.repo,
+              pull_number: pr_number,
               event: 'APPROVE'
             });
