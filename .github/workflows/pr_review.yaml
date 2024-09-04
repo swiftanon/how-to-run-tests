@@ -1,0 +1,13 @@
+name: Pull Request Review Workflow
+
+on:
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  review_approved:
+    if: github.event.review.state == 'approved'
+    runs-on: macos-latest
+    steps:
+      - name: Echo Review Approved
+        run: echo "Pull request has been approved!"
