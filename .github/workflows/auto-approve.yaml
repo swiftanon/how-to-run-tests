@@ -15,7 +15,13 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const pr_number = context.payload.pull_request.number;
-            await github.pulls.createReview({
+            // Ensure the pull request number is available
+            if (!pr_number) {
+              throw new Error("Pull request number not found in the context.");
+            }
+
+            // Use the Github API to create a review            
+            await github.rest.pulls.createReview({
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: pr_number,
