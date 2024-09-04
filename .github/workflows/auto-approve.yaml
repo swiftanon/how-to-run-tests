@@ -1,0 +1,23 @@
+name: Auto Approve PRs
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  auto_approve:
+    runs-on: macos-latest
+    if: github.actor == 'swiftanon'
+    steps:
+      - name: Auto Approve PRs
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { context, github } = require('actions/github');
+            const pr_number = context.payload.pull_request.number;
+            await github.pulls.createReview({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              event: 'APPROVE'
+            });
