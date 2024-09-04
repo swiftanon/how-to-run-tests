@@ -14,17 +14,17 @@ jobs:
     runs-on: macos-latest
     if: ${{ startsWith(github.head_ref, 'checks') }}
     steps:
-    - name: Create Tag
-      run: |
-        set -euo pipefail
-        git tag 0.0.1
+      - name: Create Tag
+        run: |
+          set -euo pipefail
+          git tag 0.0.1
 
-    - name: Push Tag to Remote Repository
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        set -euo pipefail
-        git push origin 0.0.1
+      - name: Push Tag to Remote Repository
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git push origin 0.0.1
 
       - name: Auto Approve PRs
         if: github.actor == 'swiftanon'
